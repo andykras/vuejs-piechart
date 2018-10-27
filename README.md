@@ -2,7 +2,7 @@
 
 > A PieChart with Vuejs
 
-![screenshot](https://raw.github.com/andykras/vuejs-piechart/master/pie.png)
+![screenshot](https://raw.github.com/andykras/vuejs-piechart/master/pie.gif)
 
 ## Build Setup
 
