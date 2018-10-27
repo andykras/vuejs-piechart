@@ -4,7 +4,7 @@
 
 mouse coordinates:
 
-![screenshot](https://raw.github.com/andykras/vuejs-piechart/master/pie.gif)
+![screenshot](https://raw.githubusercontent.com/andykras/vuejs-piechart/master/pie.gif)
 
 ## Build Setup
 
