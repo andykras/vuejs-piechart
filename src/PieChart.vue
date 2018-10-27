@@ -8,6 +8,14 @@
             r="25%"
             cx="50%"
             cy="50%" />
+    <text :x="radius"
+          :y="-width*0.85">
+      {{x && `x: ${x.toFixed(2)}`}}
+    </text>
+    <text :x="radius"
+          :y="-width*0.7">
+      {{y && `y: ${y.toFixed(2)}`}}
+    </text>
   </svg>
 </template>
 
@@ -15,14 +23,14 @@
 export default {
   name: 'PieChart',
   mounted() {
-    this.$nextTick(_ => (this.hasMounted = true))
     setInterval(_ => this.shuffle(this.data), 3000)
   },
   data() {
     return {
       data: [10, 5, 5, 5, 50, 5, 5, 5, 10],
       width: 100,
-      hasMounted: false
+      x: null,
+      y: null
     }
   },
   methods: {
@@ -43,13 +51,10 @@ export default {
       this.data = dataCopy
     },
     moving(event) {
-      let svg = this.$el
-      let pt = svg.createSVGPoint()
-      pt.x = event.clientX
-      pt.y = event.clientY
-      let { x, y } = pt.matrixTransform(svg.getScreenCTM().inverse())
-      // document.getElementById('coords').innerHTML = 'x: ' + x.toFixed(3) + '<br>' + 'y: ' + y.toFixed(3)
-      console.log({ x, y })
+      const svg = this.$el
+      const pt = svg.createSVGPoint()
+      ;[pt.x, pt.y] = [event.clientX, event.clientY]
+      ;({ x: this.x, y: this.y } = pt.matrixTransform(svg.getScreenCTM().inverse()))
     }
   },
   computed: {
@@ -62,10 +67,9 @@ export default {
       return this.data.map(item => {
         let relativeSize = (item / this.dataTotal) * this.circleLength
 
-        let dataObject = { relativeSize: this.hasMounted ? relativeSize : 0, offset: -startingPoint }
+        let dataObject = { relativeSize: relativeSize, offset: -startingPoint }
         startingPoint += relativeSize
 
-        // console.log({ total: this.dataTotal, relativeSize, dataObject, startingPoint })
         return dataObject
       })
     },
@@ -91,6 +95,10 @@ svg {
     fill: none;
     stroke-width: 50%; // to control center hole
     transition: stroke-dasharray 0.3s ease-in-out, stroke-dashoffset 0.3s ease-in-out;
+  }
+  &.pie text {
+    transform: rotate(90deg);
+    fill: white;
   }
 
   @for $i from 1 through length($colors) {
