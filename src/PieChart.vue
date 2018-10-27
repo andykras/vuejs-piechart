@@ -23,32 +23,23 @@
 export default {
   name: 'PieChart',
   mounted() {
-    setInterval(_ => this.shuffle(this.data), 3000)
+    const fn = _ => !this.stabilization() && setTimeout(fn, 1000)
+    fn()
   },
   data() {
+    const L = Math.random() * 20
+    for (var data = [], i = 0; i < L; ++i) data[i] = L * (1 + 9 * Math.random())
     return {
-      data: [10, 5, 5, 5, 50, 5, 5, 5, 10],
+      data: data,
       width: 100,
       x: null,
       y: null
     }
   },
   methods: {
-    shuffle(data) {
-      let dataCopy = data.slice()
-      let temp
-      let index
-      let randomIndex
-
-      for (index = 0; index < dataCopy.length; index++) {
-        randomIndex = Math.floor(Math.random() * index)
-
-        temp = dataCopy[index]
-        dataCopy[index] = dataCopy[randomIndex]
-        dataCopy[randomIndex] = temp
-      }
-
-      this.data = dataCopy
+    stabilization() {
+      this.data = this.data.map((_, index) => this.data[Math.floor(Math.random() * index)])
+      return this.data.every((val, i, arr) => val === arr[0])
     },
     moving(event) {
       const svg = this.$el
@@ -63,13 +54,10 @@ export default {
     },
     dataObjects() {
       let startingPoint = 0
-
       return this.data.map(item => {
-        let relativeSize = (item / this.dataTotal) * this.circleLength
-
-        let dataObject = { relativeSize: relativeSize, offset: -startingPoint }
+        const relativeSize = (item / this.dataTotal) * this.circleLength
+        const dataObject = { relativeSize: relativeSize, offset: -startingPoint }
         startingPoint += relativeSize
-
         return dataObject
       })
     },
@@ -87,9 +75,20 @@ export default {
 </script>
 
 <style lang="scss">
-$colors: red, yellow, cyan, green, blue, magenta, gray, purple, black;
+$colors: red, maroon, yellow, olive, lime, green, aqua, teal, blue, navy, fuchsia, purple;
+$repeat: 20;
+$dist: 3%;
+
+*,
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
 svg {
-  width: 350px;
+  max-height: 100vh;
+  max-width: 100vw;
   transform: rotate(-90deg);
   &.pie circle {
     fill: none;
@@ -101,9 +100,13 @@ svg {
     fill: white;
   }
 
-  @for $i from 1 through length($colors) {
-    &.pie circle:nth-child(#{$i}) {
-      stroke: nth($colors, $i);
+  @for $i from 1 through $repeat {
+    &.pie circle:nth-child(#{length($colors)}n + #{$i}) {
+      @if $i % 2==0 {
+        stroke: lighten(nth($colors, random(length($colors))), $dist);
+      } @else {
+        stroke: darken(nth($colors, random(length($colors))), $dist);
+      }
     }
   }
 }
