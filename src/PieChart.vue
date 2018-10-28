@@ -4,7 +4,7 @@
        @mousemove="moving">
     <circle v-for="(item,index) in dataObjects"
             :key="index"
-            v-bind:style="{strokeDasharray: `${item.relativeSize} ${circleLength}`, strokeDashoffset: item.offset}"
+            :style="{strokeDasharray: `${item.relativeSize} ${circleLength}`, strokeDashoffset: item.offset}"
             r="25%"
             cx="50%"
             cy="50%" />

@@ -3,12 +3,12 @@
 </template>
 
 <script>
-import PieChart from './PieChart';
+import PieChart from './PieChart'
 
 export default {
   name: 'app',
   components: { PieChart },
-  data () {
+  data() {
     return {}
   }
 }
